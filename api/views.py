@@ -9,7 +9,7 @@ class ProdutoViewSet(viewsets.ModelViewSet):
     
     # Isso aqui conecta a View com as configurações do settings.py
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['categoria', 'ativo'] 
+    filterset_fields = ['categoria'] 
     search_fields = ['nome', 'sku']
 
 class CategoriaViewSet(viewsets.ModelViewSet):
