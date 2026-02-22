@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters', # Adicione esta linha
     'produtos',
     'usuarios',
     'rest_framework',
@@ -129,3 +130,19 @@ STATIC_URL = 'static/'
 
 #avisar o Django que ele deve usar este novo modelo em vez do padrão
 AUTH_USER_MODEL = 'usuarios.Usuario'
+
+
+# Configurações do Django REST Framework
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+    ],
+}
