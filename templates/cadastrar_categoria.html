@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Nova Categoria | InventoryPro{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item active">Nova Categoria</li>
+            </ol>
+        </nav>
+        
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-tag-fill me-2"></i>Cadastrar Nova Categoria</h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nome da Categoria</label>
+                        {{ form.nome }}
+                        <div class="form-text">Ex: Eletrônicos, Alimentos, Limpeza.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Descrição (Opcional)</label>
+                        {{ form.descricao }}
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg me-2"></i>Salvar Categoria
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

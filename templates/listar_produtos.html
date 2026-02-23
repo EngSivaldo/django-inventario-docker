@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Inventário Geral | InventoryPro{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-dark mb-0"><i class="bi bi-box-seam me-2"></i>Gestão de Inventário</h2>
+    <a href="{% url 'cadastrar_produto' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-2"></i>Adicionar Produto
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4 py-3">SKU</th>
+                        <th>Produto</th>
+                        <th>Categoria</th>
+                        <th>Preço Venda</th>
+                        <th>Estoque</th>
+                        <th class="text-center pe-4">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in produtos %}
+                    <tr>
+                        <td class="ps-4">
+                            <span class="badge bg-dark-subtle text-dark font-monospace">{{ p.sku }}</span>
+                        </td>
+                        <td>
+                            <div class="fw-bold">{{ p.nome }}</div>
+                            <small class="text-muted">Criado em: {{ p.criado_em|date:"d/m/Y" }}</small>
+                        </td>
+                        <td><span class="badge bg-info-subtle text-info-emphasis">{{ p.categoria.nome|default:"-" }}</span></td>
+                        <td class="fw-semibold text-dark">R$ {{ p.preco_venda }}</td>
+                        <td>
+                            <span class="badge {% if p.quantidade_estoque < 10 %}bg-danger-subtle text-danger{% else %}bg-success-subtle text-success{% endif %}">
+                                {{ p.quantidade_estoque }} unidades
+                            </span>
+                        </td>
+                        <td class="text-center pe-4">
+                            <div class="btn-group shadow-sm">
+                                <a href="#" class="btn btn-sm btn-white border"><i class="bi bi-pencil"></i></a>
+                                <a href="#" class="btn btn-sm btn-white border text-danger"><i class="bi bi-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5">
+                            <div class="text-muted">
+                                <i class="bi bi-inbox fs-1 d-block mb-3"></i>
+                                <p>Nenhum produto cadastrado ainda.</p>
+                                <a href="{% url 'cadastrar_produto' %}" class="btn btn-primary btn-sm">Começar Cadastro</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

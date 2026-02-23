@@ -1,77 +1,93 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Inventário</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+{% extends 'base.html' %}
 
-<div class="container mt-5">
-    <h2 class="mb-4">📊 Painel de Controle de Estoque</h2>
+{% block title %}Dashboard | InventoryPro{% endblock %}
 
-    <div class="row mb-4">
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark mb-0">📊 Painel de Controle</h2>
+        <button class="btn btn-primary" onclick="window.print()">
+            <i class="bi bi-printer me-2"></i>Imprimir Relatório
+        </button>
+    </div>
+
+    <div class="row g-4 mb-4">
         <div class="col-md-4">
-            <div class="card bg-primary text-white">
-                <div class="card-body text-center">
-                    <h5>Total de Itens</h5>
-                    <h2 class="display-4">{{ total_geral }}</h2>
+            <div class="card border-0 border-start border-primary border-4 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-muted small fw-bold text-uppercase">Total de Itens</div>
+                    <div class="h3 fw-bold mb-0">{{ total_geral }}</div>
+                    <div class="mt-2 small text-primary"><i class="bi bi-box"></i> SKU's Cadastrados</div>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card bg-success text-white">
-                <div class="card-body text-center">
-                    <h5>Em Estoque</h5>
-                    <h2 class="display-4">{{ em_estoque }}</h2>
+            <div class="card border-0 border-start border-success border-4 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-muted small fw-bold text-uppercase">Itens Disponíveis</div>
+                    <div class="h3 fw-bold mb-0">{{ em_estoque }}</div>
+                    <div class="mt-2 small text-success"><i class="bi bi-check-circle"></i> Com estoque positivo</div>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card bg-danger text-white">
-                <div class="card-body text-center">
-                    <h5>Alertas Críticos</h5>
-                    <h2 class="display-4">{{ alerta_count }}</h2>
+            <div class="card border-0 border-start border-danger border-4 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="text-muted small fw-bold text-uppercase">Alertas Críticos</div>
+                    <div class="h3 fw-bold mb-0 text-danger">{{ alerta_count }}</div>
+                    <div class="mt-2 small text-danger"><i class="bi bi-exclamation-triangle"></i> Abaixo do mínimo</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="card shadow">
-        <div class="card-header bg-white">
-            <h5 class="mb-0 text-danger">⚠️ Itens com Estoque Baixo (Menos de 10 unid.)</h5>
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0 fw-bold text-danger">
+                <i class="bi bi-graph-down-arrow me-2"></i>Reposição Necessária
+            </h5>
         </div>
-        <div class="card-body">
-            <table class="table table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th>SKU</th>
-                        <th>Produto</th>
-                        <th>Categoria</th>
-                        <th>Quantidade</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for produto in produtos_alerta %}
-                    <tr>
-                        <td><code>{{ produto.sku }}</code></td>
-                        <td><strong>{{ produto.nome }}</strong></td>
-                        <td>{{ produto.categoria.nome }}</td>
-                        <td><span class="badge bg-danger">{{ produto.quantidade_estoque }}</span></td>
-                        <td><small class="text-uppercase fw-bold text-danger">Reposição Urgente</small></td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="5" class="text-center text-muted">Tudo certo! Nenhum item com estoque baixo.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="px-4">SKU</th>
+                            <th>Produto</th>
+                            <th>Categoria</th>
+                            <th>Estoque Atual</th>
+                            <th>Mínimo</th>
+                            <th class="text-end px-4">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for produto in produtos_alerta %}
+                        <tr>
+                            <td class="px-4"><span class="badge bg-secondary-subtle text-secondary">{{ produto.sku }}</span></td>
+                            <td><strong>{{ produto.nome }}</strong></td>
+                            <td><span class="text-muted">{{ produto.categoria.nome|default:"Sem Categoria" }}</span></td>
+                            <td>
+                                <span class="fw-bold text-danger">{{ produto.quantidade_estoque }}</span>
+                            </td>
+                            <td>{{ produto.estoque_minimo }}</td>
+                            <td class="text-end px-4">
+                                <a href="#" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-plus"></i> Pedido
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="bi bi-emoji-smile fs-2 d-block mb-2"></i>
+                                Tudo em dia! Nenhum produto precisa de reposição no momento.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
-
-</body>
-</html>
+{% endblock %}
